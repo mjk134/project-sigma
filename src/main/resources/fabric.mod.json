@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "project-sigma",
   "version": "${version}",
 
   "name": "Example Mod",
@@ -9,21 +9,20 @@
     "Me!"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/project-sigma/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "me.mjk134.sigma.ProjectSigma"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "project-sigma.mixins.json"
   ],
 
   "depends": {
