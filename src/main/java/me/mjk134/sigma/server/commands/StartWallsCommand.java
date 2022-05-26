@@ -1,19 +1,33 @@
 package me.mjk134.sigma.server.commands;
 
+import com.google.common.collect.Lists;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import me.mjk134.sigma.server.ConfigManager;
+import net.minecraft.block.Block;
+import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.Team;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.border.WorldBorder;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class StartWallsCommand {
 
     public static int run(CommandContext<ServerCommandSource> context) {
         // TODO: Add automatic wall creation functionality
-        try {
-            context.getSource().getPlayer().sendMessage(new LiteralText("Creating new walls, this may take a while"), false);
-        } catch (CommandSyntaxException exception) {
+        if (ConfigManager.STARTED) {
+            try {
+                context.getSource().getPlayer().sendMessage(new LiteralText("The game has already started!"), false);
+            } catch (CommandSyntaxException exception) {
+                return 1;
+            }
             return 1;
         }
         ServerWorld serverWorld = context.getSource().getWorld();
@@ -22,25 +36,50 @@ public class StartWallsCommand {
         worldBorder.setCenter(0, 0);
         worldBorder.setSize(worldSize);
         worldBorder.setSafeZone(WorldBorder.DEFAULT_BORDER.getSafeZone());
-        worldBorder.setDamagePerBlock(WorldBorder.DEFAULT_BORDER.getDamagePerBlock());
+        worldBorder.setDamagePerBlock(99999.0);
         worldBorder.setWarningBlocks(WorldBorder.DEFAULT_BORDER.getWarningBlocks());
         worldBorder.setWarningTime(WorldBorder.DEFAULT_BORDER.getWarningTime());
-       //boolean isAboveLimit = worldSize * 383 * 2 > 32768;
-       //try {
-       //    for (int i = -worldSize; i < worldSize; i++) {
-       //        int j;
-       //        for (j = -64; j < 319; j++) {
-       //            serverWorld.setBlockState(new BlockPos(i, j, 0), Blocks.BEDROCK.getDefaultState());
-       //            Thread.sleep(100);
-       //        }
-       //        for (j = -64; j < 319; j++) {
-       //            serverWorld.setBlockState(new BlockPos(0, j, i), Blocks.BEDROCK.getDefaultState());
-       //            Thread.sleep(100);
-       //        }
-       //    }
-       //} catch (InterruptedException ex) {
-       //    return 1;
-       //}
+        // boolean isAboveLimit = worldSize * 383 * 2 > 32768;
+        // Iterator<BlockPos> blockPosIterator = BlockPos.iterate(-worldSize /2, -64,0,worldSize/2,319,0).iterator();
+        // List<BlockPos> list = Lists.newArrayList();
+        //  for (int i = -worldSize / 2; i < worldSize / 2; i++) {
+        //      for (int j = -64; j < 319; j++) {
+        //           CompletableFuture<Void> v =  context.getSource().getServer().submit(new BlockStateTaskSubmit(i,j, serverWorld));
+        //           while (!v.isDone()) {
+        //           }
+        //      }
+        //  }
+        //  ProjectSigma.LOGGER.debug("test iterable", blockPosIterator);
+        //  blockPosIterator.forEach(blockPos -> {
+        //      context.getSource().getServer().submit(() -> {
+        //          serverWorld.setBlockState(blockPos, Blocks.BEDROCK.getDefaultState());
+        //          ProjectSigma.LOGGER.debug("Set block");
+        //      });
+        //  });
+
+        // while (blockPosIterator.hasNext()) {
+        //     BlockPos blockPos;
+        //     while(blockPosIterator.hasNext()) {
+        //         blockPos = (BlockPos)blockPosIterator.next();
+        //         Block block2 = serverWorld.getBlockState(blockPos).getBlock();
+        //         serverWorld.updateNeighbors(blockPos, block2);
+        //     }
+        // }
+
+        Scoreboard scoreboard = context.getSource().getServer().getScoreboard();
+        Team team1 = scoreboard.addTeam(ConfigManager.teamAName);
+        team1.setDisplayName(new LiteralText(ConfigManager.teamAName));
+        team1.setColor(Formatting.AQUA);
+        team1.setFriendlyFireAllowed(false);
+        team1.setShowFriendlyInvisibles(true);
+
+        Team team2 = scoreboard.addTeam(ConfigManager.teamBName);
+        team2.setDisplayName(new LiteralText(ConfigManager.teamBName));
+        team2.setColor(Formatting.GOLD);
+        team2.setFriendlyFireAllowed(false);
+        team2.setShowFriendlyInvisibles(true);
+
+
         return 1;
     }
 

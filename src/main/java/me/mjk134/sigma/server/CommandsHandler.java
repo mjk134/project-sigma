@@ -18,9 +18,8 @@ public class CommandsHandler {
     public static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
                 literal("startwalls")
-                        .then(argument("size", IntegerArgumentType.integer())
-                                .executes(StartWallsCommand::run)
-                        )
+                        .then(argument("size", IntegerArgumentType.integer()).executes(StartWallsCommand::run))
+                        .requires((source) -> source.hasPermissionLevel(2))
         );
 
     }
