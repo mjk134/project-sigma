@@ -3,6 +3,7 @@ package me.mjk134.sigma.server.commands;
 import com.google.common.collect.Lists;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import me.mjk134.sigma.ProjectSigma;
 import me.mjk134.sigma.server.ConfigManager;
 import net.minecraft.block.Block;
 import net.minecraft.scoreboard.Scoreboard;
@@ -15,6 +16,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.border.WorldBorder;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class StartWallsCommand {
 
     public static int run(CommandContext<ServerCommandSource> context) {
         // TODO: Add automatic wall creation functionality
-        if (ConfigManager.STARTED) {
+        if (ConfigManager.STARTED && ConfigManager.ENABLED) {
             try {
                 context.getSource().getPlayer().sendMessage(new LiteralText("The game has already started!"), false);
             } catch (CommandSyntaxException exception) {
@@ -79,7 +81,11 @@ public class StartWallsCommand {
         team2.setFriendlyFireAllowed(false);
         team2.setShowFriendlyInvisibles(true);
 
-
+        try {
+            ProjectSigma.configManager.start();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         return 1;
     }
 
