@@ -4,7 +4,10 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import me.mjk134.sigma.ProjectSigma;
 import me.mjk134.sigma.server.commands.StartWallsCommand;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.minecraft.entity.Entity;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.world.ServerWorld;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -37,6 +40,8 @@ public class CommandsHandler {
                         )
                         .requires((source) -> source.hasPermissionLevel(2))
         );
+
+
 
     }
 

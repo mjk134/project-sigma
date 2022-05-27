@@ -4,6 +4,7 @@
   "package": "me.mjk134.sigma.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "LivingEntityMixin",
     "ServerPlayerEntityMixin"
   ],
   "client": [

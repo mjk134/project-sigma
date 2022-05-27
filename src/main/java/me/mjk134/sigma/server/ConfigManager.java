@@ -67,13 +67,14 @@ public class ConfigManager {
         JsonArray playerLivesArray = json.getAsJsonArray("players");
         HashMap<String, Integer> playerLives = new HashMap<>();
         for (int i = 0; i < playerLivesArray.size(); i++) {
-            JsonObject playerData = playerLivesArray.getAsJsonObject();
+            JsonObject playerData = playerLivesArray.get(i).getAsJsonObject();
             playerLives.put(playerData.get("name").getAsString(), playerData.get("numLives").getAsInt());
         }
         LivesManager.setPlayerLives(playerLives);
     }
 
     public void addPlayer(ServerPlayerEntity player, Team team, Scoreboard scoreboard, String teamName, World world) throws IOException {
+        ProjectSigma.LOGGER.info("Adding new player to team: " + teamName);
         RegistryKey<World> registryKey = world.getRegistryKey();
         scoreboard.addPlayerToTeam(player.getEntityName(), team);
         ProjectSigma.livesManager.addPlayer(player);

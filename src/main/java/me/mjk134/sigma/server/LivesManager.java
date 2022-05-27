@@ -38,15 +38,15 @@ public class LivesManager {
 
     public void onDeath(ServerPlayerEntity player) throws IOException {
         int newLives = playerLives.get(player.getEntityName()) - 1;
-        if (newLives <= 0) {
+        if (newLives == 0) {
             // TODO: implement death logic
         } else {
             FileReader reader = new FileReader("project-sigma.json");
             JsonObject json = gson.fromJson(reader, JsonObject.class);
             JsonArray playerLivesArray = json.getAsJsonArray("players");
             for (int i = 0; i < playerLivesArray.size(); i++) {
-                JsonObject playerData = playerLivesArray.getAsJsonObject();
-                if (Objects.equals(playerData.getAsJsonObject("name").getAsString(), player.getEntityName())) {
+                JsonObject playerData = playerLivesArray.get(i).getAsJsonObject();
+                if (Objects.equals(playerData.get("name").getAsString(), player.getEntityName())) {
                     playerData.addProperty("name", player.getEntityName());
                     playerData.addProperty("numLives", newLives);
                     FileWriter writer = new FileWriter("project-sigma.json");
