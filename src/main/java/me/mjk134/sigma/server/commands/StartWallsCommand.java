@@ -31,6 +31,13 @@ public class StartWallsCommand {
                 return 1;
             }
             return 1;
+        } else if (!ConfigManager.ENABLED) {
+            try {
+                context.getSource().getPlayer().sendMessage(new LiteralText("You have to enable walls, you can o this by running: /walls enable"), false);
+            } catch (CommandSyntaxException exception) {
+                return 1;
+            }
+            return 1;
         }
         ServerWorld serverWorld = context.getSource().getWorld();
         WorldBorder worldBorder = serverWorld.getWorldBorder();

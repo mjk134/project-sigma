@@ -5,6 +5,7 @@ import me.mjk134.sigma.server.ConfigManager;
 import me.mjk134.sigma.server.LivesManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
@@ -53,6 +54,11 @@ public class ProjectSigma implements ModInitializer {
 			}
 		}
 
+		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+			newPlayer.networkHandler.sendPacket(new TitleS2CPacket(new LiteralText("You died!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
+			newPlayer.networkHandler.sendPacket(new SubtitleS2CPacket(new LiteralText("You now have " + LivesManager.playerLives.get(newPlayer.getEntityName()) + " lives remaining!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
+		});
+
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			Scoreboard scoreboard = server.getScoreboard();
 			if (ConfigManager.STARTED && ConfigManager.ENABLED) {
@@ -60,9 +66,9 @@ public class ProjectSigma implements ModInitializer {
 				Team teamB =  scoreboard.getTeam(ConfigManager.teamBName);
 				assert teamA != null;
 				assert teamB != null;
-				handler.getPlayer().networkHandler.sendPacket(new TitleS2CPacket(new LiteralText("Welcome to the server!").setStyle(Style.EMPTY.withColor(Formatting.YELLOW))));
-				handler.getPlayer().networkHandler.sendPacket(new SubtitleS2CPacket(new LiteralText("We're just setting you up, you will be teleported soon!").setStyle(Style.EMPTY.withColor(Formatting.YELLOW))));
 				if (!teamA.getPlayerList().contains(handler.getPlayer().getEntityName()) && !teamB.getPlayerList().contains(handler.getPlayer().getEntityName())) {
+					handler.getPlayer().networkHandler.sendPacket(new TitleS2CPacket(new LiteralText("Welcome to the server!").setStyle(Style.EMPTY.withColor(Formatting.YELLOW))));
+					handler.getPlayer().networkHandler.sendPacket(new SubtitleS2CPacket(new LiteralText("We're just setting you up, you will be teleported soon!").setStyle(Style.EMPTY.withColor(Formatting.YELLOW))));
 					handler.getPlayer().teleport(11, 317, 0);
 					if (teamA.getPlayerList().size() > teamB.getPlayerList().size()) {
 						try {
