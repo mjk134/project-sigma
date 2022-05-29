@@ -39,7 +39,6 @@ public class ProjectSigma implements ModInitializer {
 	@Override
 	public void onInitialize() {
 
-
 		if (!configManager.configExists()) {
 			try {
 				configManager.createConfig();

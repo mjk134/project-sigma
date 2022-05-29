@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.mjk134.sigma.mixin.ServerPlayerEntityMixin;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.world.GameMode;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -38,8 +39,10 @@ public class LivesManager {
 
     public void onDeath(ServerPlayerEntity player) throws IOException {
         int newLives = playerLives.get(player.getEntityName()) - 1;
+        playerLives.replace(player.getEntityName(), newLives);
         if (newLives == 0) {
-            // TODO: implement death logic
+            // TODO: implement further death logic
+            player.changeGameMode(GameMode.SPECTATOR);
         } else {
             FileReader reader = new FileReader("project-sigma.json");
             JsonObject json = gson.fromJson(reader, JsonObject.class);
