@@ -43,6 +43,20 @@ public class LivesManager {
         if (newLives == 0) {
             // TODO: implement further death logic
             player.changeGameMode(GameMode.SPECTATOR);
+            FileReader reader = new FileReader("project-sigma.json");
+            JsonObject json = gson.fromJson(reader, JsonObject.class);
+            JsonArray playerLivesArray = json.getAsJsonArray("players");
+            for (int i = 0; i < playerLivesArray.size(); i++) {
+                JsonObject playerData = playerLivesArray.get(i).getAsJsonObject();
+                if (Objects.equals(playerData.get("name").getAsString(), player.getEntityName())) {
+                    playerData.addProperty("name", player.getEntityName());
+                    playerData.addProperty("numLives", newLives);
+                    FileWriter writer = new FileWriter("project-sigma.json");
+                    gson.toJson(json, writer);
+                    writer.close();
+                    break;
+                }
+            }
         } else {
             FileReader reader = new FileReader("project-sigma.json");
             JsonObject json = gson.fromJson(reader, JsonObject.class);

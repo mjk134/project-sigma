@@ -54,7 +54,7 @@ public class ProjectSigma implements ModInitializer {
 		}
 
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
-			newPlayer.networkHandler.sendPacket(new TitleS2CPacket(new LiteralText("You died!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
+			newPlayer.networkHandler.sendPacket(new TitleS2CPacket(new LiteralText(LivesManager.playerLives.get(newPlayer.getEntityName()) == 0 ? "You have been eliminated!" : "You died!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
 			newPlayer.networkHandler.sendPacket(new SubtitleS2CPacket(new LiteralText("You now have " + LivesManager.playerLives.get(newPlayer.getEntityName()) + " lives remaining!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
 		});
 

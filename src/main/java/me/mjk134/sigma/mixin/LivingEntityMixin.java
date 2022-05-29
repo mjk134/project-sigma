@@ -34,17 +34,13 @@ public abstract class LivingEntityMixin {
             if (entity != null) {
                 if ((LivingEntity) (Object) this instanceof AnimalEntity) {
                     if (entity instanceof ServerPlayerEntity) {
-                        ServerPlayerEntity player = (ServerPlayerEntity) entity;
-                        //player.getStatHandler()
                         StatusEffect effect = StatusEffect.byRawId(18);
                         entity.addStatusEffect(new StatusEffectInstance(effect, 1200));
                     }
                 } else if ((LivingEntity) (Object) this instanceof VillagerEntity) {
                     if (this.isBaby()) {
-                        int X = entity.getBlockX();
-                        int Y = entity.getBlockY();
-                        int Z = entity.getBlockZ();
-                       entity.getWorld().spawnEntity(new ExperienceOrbEntity(entity.getWorld(), X, Y, Z, 5));
+                        VillagerEntity babyVillager = (VillagerEntity) (Object) this;
+                        entity.getWorld().spawnEntity(new ExperienceOrbEntity(entity.getWorld(), babyVillager.getX(), babyVillager.getY(), babyVillager.getZ(), 5));
                     }
                 }
             }
