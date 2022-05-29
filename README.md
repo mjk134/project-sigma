@@ -1,4 +1,6 @@
-# Fabric Example Mod
+# Project Sigma
+
+A minecraft mod designed for our custom based walls smp.
 
 ## Setup
 
