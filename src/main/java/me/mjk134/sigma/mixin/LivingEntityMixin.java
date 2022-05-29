@@ -26,9 +26,6 @@ public abstract class LivingEntityMixin{
 
     @Shadow public abstract boolean isBaby();
 
-    @Shadow public abstract Identifier getLootTable();
-
-    @Shadow private BlockPos lastBlockPos;
 
     @Inject(method = "onKilledBy", at = @At(value = "HEAD"))
     public void onAnimalDeath(LivingEntity entity, CallbackInfo ci) {
@@ -40,16 +37,17 @@ public abstract class LivingEntityMixin{
                         entity.addStatusEffect(new StatusEffectInstance(effect, 1200));
                     }
                 } else if ((LivingEntity) (Object) this instanceof VillagerEntity) {
-                    if (this.isBaby()) {
-                       // entity.getWorld().spawnEntity(new ExperienceOrbEntity(entity.getWorld(),(Entity) (Object) this.getX(), (Entity) (Object) this.getY(),  );
-                    }
+                    // if (this.isBaby()) {
+                    //     int X = entity.getBlockX();
+                    //     int Y = entity.getBlockY();
+                    //     int Z = entity.getBlockZ();
+                    //    entity.getWorld().spawnEntity(new ExperienceOrbEntity(entity.getWorld(),X, Y, Z, 5));
+                    // }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-
 
 }

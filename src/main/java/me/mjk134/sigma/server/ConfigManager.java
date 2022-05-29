@@ -20,6 +20,8 @@ import java.util.Objects;
 
 public class ConfigManager {
 
+    // TODO: Add command to enable/disable LivingEntityMixin.java functions
+
     public static boolean ENABLED = false;
     public static boolean STARTED = false;
     public static int numLives = 3;
