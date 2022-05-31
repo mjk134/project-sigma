@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import me.mjk134.sigma.ProjectSigma;
 import me.mjk134.sigma.server.commands.GetLivesCommand;
+import me.mjk134.sigma.server.commands.SetLivesCommand;
 import me.mjk134.sigma.server.commands.StartWallsCommand;
 import net.minecraft.server.command.ServerCommandSource;
 
@@ -56,7 +57,7 @@ public class CommandsHandler {
                         .then(argument("PlayerName", StringArgumentType.string())
                                 .executes(context -> {
                                     try {
-                                        return GetLivesCommand.run(context);
+                                        return SetLivesCommand.run(context);
                                     } catch (FileNotFoundException e) {
                                         throw new RuntimeException(e);
                                     }
