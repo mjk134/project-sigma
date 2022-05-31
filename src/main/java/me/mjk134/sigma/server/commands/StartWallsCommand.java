@@ -33,7 +33,7 @@ public class StartWallsCommand {
             return 1;
         } else if (!ConfigManager.ENABLED) {
             try {
-                context.getSource().getPlayer().sendMessage(new LiteralText("You have to enable walls, you can o this by running: /walls enable"), false);
+                context.getSource().getPlayer().sendMessage(new LiteralText("You have to enable walls, you can do this by running: /walls enable"), false);
             } catch (CommandSyntaxException exception) {
                 return 1;
             }
@@ -87,6 +87,12 @@ public class StartWallsCommand {
         team2.setColor(Formatting.GOLD);
         team2.setFriendlyFireAllowed(false);
         team2.setShowFriendlyInvisibles(true);
+
+        Team team3 = scoreboard.addTeam(ConfigManager.teamRogueName);
+        team3.setDisplayName(new LiteralText(ConfigManager.teamRogueName));
+        team3.setColor(Formatting.GRAY);
+        team3.setFriendlyFireAllowed(true);
+        team3.setShowFriendlyInvisibles(true);
 
         try {
             ProjectSigma.configManager.start();

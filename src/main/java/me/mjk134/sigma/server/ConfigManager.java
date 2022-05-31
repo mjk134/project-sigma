@@ -27,6 +27,7 @@ public class ConfigManager {
     public static int numLives = 3;
     public static String teamAName = "TeamA";
     public static String teamBName = "TeamB";
+    public static String teamRogueName = "Rogue";
     private final Gson gson = new Gson();
 
     public boolean configExists() {
@@ -52,6 +53,7 @@ public class ConfigManager {
         json.addProperty("numLives", numLives);
         json.addProperty("teamAName", teamAName);
         json.addProperty("teamBName", teamBName);
+        json.addProperty("teamRogueName", teamRogueName);
         reader.close();
         writer = new FileWriter("project-sigma.json");
         gson.toJson(json, writer);
@@ -66,6 +68,7 @@ public class ConfigManager {
         numLives = json.get("numLives").getAsInt();
         teamAName = json.get("teamAName").getAsString();
         teamBName = json.get("teamBName").getAsString();
+        teamRogueName = json.get("teamRogueName").getAsString();
         JsonArray playerLivesArray = json.getAsJsonArray("players");
         HashMap<String, Integer> playerLives = new HashMap<>();
         for (int i = 0; i < playerLivesArray.size(); i++) {

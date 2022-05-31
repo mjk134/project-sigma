@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
@@ -28,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Objects;
 
 
 public class ProjectSigma implements ModInitializer {
@@ -54,17 +56,24 @@ public class ProjectSigma implements ModInitializer {
 		}
 
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
-			newPlayer.networkHandler.sendPacket(new TitleS2CPacket(new LiteralText(LivesManager.playerLives.get(newPlayer.getEntityName()) == 0 ? "You have been eliminated!" : "You died!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
-			newPlayer.networkHandler.sendPacket(new SubtitleS2CPacket(new LiteralText("You now have " + LivesManager.playerLives.get(newPlayer.getEntityName()) + " lives remaining!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
+			Scoreboard scoreboard = newPlayer.getScoreboard();
+
+			if (!Objects.equals(scoreboard.getPlayerTeam(newPlayer.getEntityName()), scoreboard.getTeam(ConfigManager.teamRogueName)))
+				newPlayer.networkHandler.sendPacket(new TitleS2CPacket(new LiteralText(LivesManager.playerLives.get(newPlayer.getEntityName()) == 0 ? "You've Been Eliminated!" : "You died!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
+			else
+				newPlayer.networkHandler.sendPacket(new TitleS2CPacket(new LiteralText("You've Gone Rogue!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
+			newPlayer.networkHandler.sendPacket(new SubtitleS2CPacket(new LiteralText(LivesManager.playerLives.get(newPlayer.getEntityName()) == 0 ? "You're All Out Of Lives" : "You now have " + LivesManager.playerLives.get(newPlayer.getEntityName()) + " lives remaining!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
 		});
 
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			Scoreboard scoreboard = server.getScoreboard();
 			if (ConfigManager.STARTED && ConfigManager.ENABLED) {
-				Team teamA =  scoreboard.getTeam(ConfigManager.teamAName);
-				Team teamB =  scoreboard.getTeam(ConfigManager.teamBName);
+				Team teamA = scoreboard.getTeam(ConfigManager.teamAName);
+				Team teamB = scoreboard.getTeam(ConfigManager.teamBName);
+				Team teamRogue = scoreboard.getTeam(ConfigManager.teamRogueName);
 				assert teamA != null;
 				assert teamB != null;
+				assert teamRogue != null;
 				if (!teamA.getPlayerList().contains(handler.getPlayer().getEntityName()) && !teamB.getPlayerList().contains(handler.getPlayer().getEntityName())) {
 					handler.getPlayer().networkHandler.sendPacket(new TitleS2CPacket(new LiteralText("Welcome to the server!").setStyle(Style.EMPTY.withColor(Formatting.YELLOW))));
 					handler.getPlayer().networkHandler.sendPacket(new SubtitleS2CPacket(new LiteralText("We're just setting you up, you will be teleported soon!").setStyle(Style.EMPTY.withColor(Formatting.YELLOW))));
