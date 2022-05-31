@@ -2,12 +2,11 @@ package me.mjk134.sigma.server;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import me.mjk134.sigma.ProjectSigma;
+import me.mjk134.sigma.server.commands.GetLivesCommand;
 import me.mjk134.sigma.server.commands.StartWallsCommand;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
-import net.minecraft.entity.Entity;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.world.ServerWorld;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,8 +39,31 @@ public class CommandsHandler {
                         )
                         .requires((source) -> source.hasPermissionLevel(2))
         );
+        dispatcher.register(
+                literal("getLives")
+                        .then(argument("PlayerName", StringArgumentType.string()) // TODO: suggest players who are currently online with .suggests()
+                                .executes(context -> {
+                                    try {
+                                        return GetLivesCommand.run(context);
+                                    } catch (FileNotFoundException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }))
 
+        );
+        dispatcher.register(
+                literal("setLives")
+                        .then(argument("PlayerName", StringArgumentType.string())
+                                .executes(context -> {
+                                    try {
+                                        return GetLivesCommand.run(context);
+                                    } catch (FileNotFoundException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }))
+                        .requires((source) -> source.hasPermissionLevel(2))
 
+        );
 
     }
 
