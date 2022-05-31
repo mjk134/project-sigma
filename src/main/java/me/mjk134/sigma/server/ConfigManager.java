@@ -5,17 +5,30 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import me.mjk134.sigma.ProjectSigma;
+import net.minecraft.client.world.GeneratorType;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardCriterion;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.GeneratorOptions;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
+import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
+import xyz.nucleoid.fantasy.Fantasy;
+import xyz.nucleoid.fantasy.RuntimeWorldConfig;
+import xyz.nucleoid.fantasy.RuntimeWorldHandle;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Objects;
 
 public class ConfigManager {
@@ -27,6 +40,7 @@ public class ConfigManager {
     public static int numLives = 3;
     public static String teamAName = "TeamA";
     public static String teamBName = "TeamB";
+    public static boolean ENABLED_NETHER = false;
     private final Gson gson = new Gson();
 
     public boolean configExists() {
@@ -52,6 +66,7 @@ public class ConfigManager {
         json.addProperty("numLives", numLives);
         json.addProperty("teamAName", teamAName);
         json.addProperty("teamBName", teamBName);
+        json.addProperty("enabledNether", ENABLED_NETHER);
         reader.close();
         writer = new FileWriter("project-sigma.json");
         gson.toJson(json, writer);
@@ -66,6 +81,7 @@ public class ConfigManager {
         numLives = json.get("numLives").getAsInt();
         teamAName = json.get("teamAName").getAsString();
         teamBName = json.get("teamBName").getAsString();
+        ENABLED_NETHER = json.get("enabledNether").getAsBoolean();
         JsonArray playerLivesArray = json.getAsJsonArray("players");
         HashMap<String, Integer> playerLives = new HashMap<>();
         for (int i = 0; i < playerLivesArray.size(); i++) {
@@ -100,6 +116,25 @@ public class ConfigManager {
         writer.close();
     }
 
+    public void enableNether(MinecraftServer server) throws IOException {
+        Fantasy fantasy = Fantasy.get(server);
+        ENABLED_NETHER = true;
+        FileReader reader = new FileReader("project-sigma.json");
+        JsonObject json = gson.fromJson(reader, JsonObject.class);
+        json.addProperty("enabledNether", true);
+        reader.close();
+        FileWriter writer = new FileWriter("project-sigma.json");
+        gson.toJson(json, writer);
+        writer.close();
+        ChunkGeneratorSettings settings = server.getRegistryManager().get(Registry.CHUNK_GENERATOR_SETTINGS_KEY).getEntry(ChunkGeneratorSettings.NETHER).get().value();
+        RuntimeWorldConfig config = new RuntimeWorldConfig()
+            .setDimensionType(DimensionType.THE_NETHER_REGISTRY_KEY)
+            .setGenerator(GeneratorOptions.createGenerator(server.getRegistryManager(), 0, server.getRegistryManager().get(Registry.CHUNK_GENERATOR_SETTINGS_KEY).getKey(settings).get()))
+            .setDifficulty(Difficulty.HARD);
+        fantasy.getOrOpenPersistentWorld(new Identifier("project-sigma",teamAName + "_nether"), config);
+        fantasy.getOrOpenPersistentWorld(new Identifier("project-sigma",teamBName + "_nether"), config);
+    }
+
     public void start() throws IOException {
         STARTED = true;
         FileReader reader = new FileReader("project-sigma.json");
@@ -109,6 +144,22 @@ public class ConfigManager {
         FileWriter writer = new FileWriter("project-sigma.json");
         gson.toJson(json, writer);
         writer.close();
+    }
+
+    public void swap(ServerPlayerEntity player, Team team, Scoreboard scoreboard, String teamName, World world) {
+        scoreboard.removePlayerFromTeam(player.getEntityName(), team);
+        RegistryKey<World> registryKey = world.getRegistryKey();
+        if (Objects.equals(teamName, teamAName)) {
+            Team teamB = scoreboard.getTeam(teamBName);
+            scoreboard.addPlayerToTeam(player.getEntityName(), teamB);
+            player.setSpawnPoint(registryKey, new BlockPos(0, 113, 18), 0.0f, true, false);
+            player.teleport(0, 113,18);
+        } else {
+            Team teamA = scoreboard.getTeam(teamAName);
+            scoreboard.addPlayerToTeam(player.getEntityName(), teamA);
+            player.setSpawnPoint(registryKey, new BlockPos(1, 118, -7), 0.0f, true, false);
+            player.teleport(1, 118, -7);
+        }
     }
 
 }
