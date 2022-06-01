@@ -11,6 +11,7 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Style;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
@@ -20,7 +21,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-public class StartWallsCommand {
+public class StartWallsCommand implements CommandInterface {
 
     public static int run(CommandContext<ServerCommandSource> context) {
         // TODO: Add automatic wall creation functionality
@@ -38,6 +39,12 @@ public class StartWallsCommand {
                 return 1;
             }
             return 1;
+        } else {
+            try {
+                context.getSource().getPlayer().sendMessage(new LiteralText("Starting game..").setStyle(Style.EMPTY.withColor(Formatting.GREEN)), false);
+            } catch (CommandSyntaxException exception) {
+                return 1;
+            }
         }
         ServerWorld serverWorld = context.getSource().getWorld();
         WorldBorder worldBorder = serverWorld.getWorldBorder();
