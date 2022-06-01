@@ -6,17 +6,21 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.mjk134.sigma.server.ConfigManager;
+import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.entity.Entity;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Collection;
 import java.util.Objects;
 
 public class GetLivesCommand {
 
-    public static int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException, FileNotFoundException {
+    public static int run(CommandContext<ServerCommandSource> context, Entity PlayerName) throws FileNotFoundException {
         if (!ConfigManager.STARTED || !ConfigManager.ENABLED) {
             try {
                 context.getSource().getPlayer().sendMessage(new LiteralText("The walls have not been activated yet!"), false);
@@ -25,8 +29,7 @@ public class GetLivesCommand {
             }
         } else {
 
-            Scoreboard scoreboard = context.getSource().getServer().getScoreboard();
-            String playerName = '"' + context.getArgument("PlayerName", String.class) + '"';
+            String playerName = '"' + PlayerName.getEntityName() + '"';
             FileReader reader;
             try {
                 reader = new FileReader("project-sigma.json");
@@ -40,7 +43,7 @@ public class GetLivesCommand {
                 JsonObject playerData = playerLivesArray.get(i).getAsJsonObject();
                 if (Objects.equals(playerData.get("name").toString(), playerName)) {
                     playerExists = true;
-                    context.getSource().sendFeedback(new LiteralText(context.getArgument("PlayerName", String.class) + " has " + playerData.get("numLives").getAsInt() + " lives left."), false);
+                    context.getSource().sendFeedback(new LiteralText(PlayerName.getEntityName()+ " has " + playerData.get("numLives").getAsInt() + (playerData.get("numLives").getAsInt() == 1 ?" life left.":" lives left.")), false);
                     break;
                 }
             }

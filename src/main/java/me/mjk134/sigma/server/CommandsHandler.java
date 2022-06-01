@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
 
@@ -63,10 +64,10 @@ public class CommandsHandler {
         );
         dispatcher.register(
                 literal("getLives")
-                        .then(argument("PlayerName", StringArgumentType.string()) // TODO: suggest players who are currently online with .suggests()
+                        .then(argument("PlayerName", EntityArgumentType.entities())
                                 .executes(context -> {
                                     try {
-                                        return GetLivesCommand.run(context);
+                                        return GetLivesCommand.run(context, EntityArgumentType.getEntity(context, "PlayerName"));
                                     } catch (FileNotFoundException e) {
                                         throw new RuntimeException(e);
                                     }
@@ -75,15 +76,14 @@ public class CommandsHandler {
         );
         dispatcher.register(
                 literal("setLives")
-                        .then(argument("PlayerName", StringArgumentType.string())
-                                .executes(context -> {
-                                    try {
-                                        return SetLivesCommand.run(context);
-                                    } catch (FileNotFoundException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }))
-                        .requires((source) -> source.hasPermissionLevel(2))
+                        .then(argument("PlayerName", EntityArgumentType.entities()).then(argument("Lives", IntegerArgumentType.integer()).executes(context -> {
+                            try {
+                                return SetLivesCommand.run(context, EntityArgumentType.getEntity(context, "PlayerName"));
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        })))
+                        .requires((source) -> source.hasPermissionLevel(2)));
           
         dispatcher.register(literal("nether")
                 .executes(NetherCommand::run)
