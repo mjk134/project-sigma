@@ -3,6 +3,7 @@ package me.mjk134.sigma.server;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.mjk134.sigma.ProjectSigma;
 
 import me.mjk134.sigma.server.commands.GetLivesCommand;
@@ -59,7 +60,17 @@ public class CommandsHandler {
                                         })
                                 )
                         )
-                        .then(argument("player", EntityArgumentType.entities()).executes(SwapTeamsCommand::run))
+                        .then(literal("swap")
+                                .then(argument("player", EntityArgumentType.entities())
+                                        .executes(
+                                                context -> {
+                                                    try {
+                                                        return SwapTeamsCommand.run(context);
+                                                    } catch (CommandSyntaxException e) {
+                                                        throw new RuntimeException(e);
+                                                    }
+                                                }
+                                        )))
                         .requires((source) -> source.hasPermissionLevel(2))
         );
         dispatcher.register(

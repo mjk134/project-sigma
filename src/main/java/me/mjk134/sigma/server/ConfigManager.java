@@ -152,6 +152,7 @@ public class ConfigManager {
     public void swap(ServerPlayerEntity player, Team team, Scoreboard scoreboard, String teamName, World world) {
         scoreboard.removePlayerFromTeam(player.getEntityName(), team);
         RegistryKey<World> registryKey = world.getRegistryKey();
+        if (Objects.equals(teamName, teamRogueName)) return;
         if (Objects.equals(teamName, teamAName)) {
             Team teamB = scoreboard.getTeam(teamBName);
             scoreboard.addPlayerToTeam(player.getEntityName(), teamB);
