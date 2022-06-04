@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class SetLivesCommand {
-//TODO: set lives command
     public static int run(CommandContext<ServerCommandSource> context, Entity PlayerName) throws IOException {
         if (!ConfigManager.STARTED || !ConfigManager.ENABLED) {
             try {
@@ -45,7 +44,7 @@ public class SetLivesCommand {
                 if (Objects.equals(playerData.get("name").toString(), playerName)) {
                     playerData.addProperty("name", PlayerName.getEntityName());
                     playerData.addProperty("numLives", newLives);
-                    context.getSource().sendFeedback(new LiteralText(PlayerName.getEntityName() + " now has " + newLives + (newLives == 1 ? " life." : "lives.")), true);
+                    context.getSource().sendFeedback(new LiteralText(PlayerName.getEntityName() + " now has " + newLives + (newLives == 1 ? " life." : " lives.")), true);
                     FileWriter writer = new FileWriter("project-sigma.json");
                     gson.toJson(json, writer);
                     writer.close();

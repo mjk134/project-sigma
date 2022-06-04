@@ -6,12 +6,8 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.mjk134.sigma.ProjectSigma;
 
-import me.mjk134.sigma.server.commands.GetLivesCommand;
-import me.mjk134.sigma.server.commands.SetLivesCommand;
+import me.mjk134.sigma.server.commands.*;
 import net.minecraft.server.command.ServerCommandSource;
-import me.mjk134.sigma.server.commands.NetherCommand;
-import me.mjk134.sigma.server.commands.StartWallsCommand;
-import me.mjk134.sigma.server.commands.SwapTeamsCommand;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.Entity;
@@ -74,28 +70,38 @@ public class CommandsHandler {
                         .requires((source) -> source.hasPermissionLevel(2))
         );
         dispatcher.register(
-                literal("getLives")
-                        .then(argument("PlayerName", EntityArgumentType.entities())
-                                .executes(context -> {
-                                    try {
-                                        return GetLivesCommand.run(context, EntityArgumentType.getEntity(context, "PlayerName"));
-                                    } catch (FileNotFoundException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }))
-
-        );
-        dispatcher.register(
-                literal("setLives")
+                literal("lives").then(
+                        literal("get")
+                                .then(argument("PlayerName", EntityArgumentType.entities())
+                                        .executes(context -> {
+                                            try {
+                                                return GetLivesCommand.run(context, EntityArgumentType.getEntity(context, "PlayerName"));
+                                            } catch (FileNotFoundException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                        })))
+                .then(literal("set")
                         .then(argument("PlayerName", EntityArgumentType.entities()).then(argument("Lives", IntegerArgumentType.integer()).executes(context -> {
                             try {
                                 return SetLivesCommand.run(context, EntityArgumentType.getEntity(context, "PlayerName"));
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
-                        })))
-                        .requires((source) -> source.hasPermissionLevel(2)));
-          
+                        }))).requires((source) -> source.hasPermissionLevel(2))
+                )
+                .then(literal("donate")
+                                .then(argument("PlayerName", EntityArgumentType.entities()).executes(context -> {
+                                    try {
+                                        return DonateLivesCommand.run(context, EntityArgumentType.getEntity(context, "PlayerName"));
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }))
+
+                        )
+        );
+
+
         dispatcher.register(literal("nether")
                 .executes(NetherCommand::run)
         );
