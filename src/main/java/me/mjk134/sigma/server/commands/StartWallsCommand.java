@@ -95,6 +95,12 @@ public class StartWallsCommand implements CommandInterface {
         team2.setFriendlyFireAllowed(false);
         team2.setShowFriendlyInvisibles(true);
 
+        Team team3 = scoreboard.addTeam(ConfigManager.teamRogueName);
+        team3.setDisplayName(new LiteralText(ConfigManager.teamRogueName));
+        team3.setColor(Formatting.GRAY);
+        team3.setFriendlyFireAllowed(true);
+        team3.setShowFriendlyInvisibles(true);
+
         try {
             ProjectSigma.configManager.start();
         } catch (IOException ex) {

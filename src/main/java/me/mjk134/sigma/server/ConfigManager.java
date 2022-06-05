@@ -40,6 +40,7 @@ public class ConfigManager {
     public static int numLives = 3;
     public static String teamAName = "TeamA";
     public static String teamBName = "TeamB";
+    public static String teamRogueName = "Rogue";
     public static boolean ENABLED_NETHER = false;
     private final Gson gson = new Gson();
 
@@ -66,6 +67,7 @@ public class ConfigManager {
         json.addProperty("numLives", numLives);
         json.addProperty("teamAName", teamAName);
         json.addProperty("teamBName", teamBName);
+        json.addProperty("teamRogueName", teamRogueName);
         json.addProperty("enabledNether", ENABLED_NETHER);
         reader.close();
         writer = new FileWriter("project-sigma.json");
@@ -81,6 +83,7 @@ public class ConfigManager {
         numLives = json.get("numLives").getAsInt();
         teamAName = json.get("teamAName").getAsString();
         teamBName = json.get("teamBName").getAsString();
+        teamRogueName = json.get("teamRogueName").getAsString();
         ENABLED_NETHER = json.get("enabledNether").getAsBoolean();
         JsonArray playerLivesArray = json.getAsJsonArray("players");
         HashMap<String, Integer> playerLives = new HashMap<>();
@@ -149,6 +152,7 @@ public class ConfigManager {
     public void swap(ServerPlayerEntity player, Team team, Scoreboard scoreboard, String teamName, World world) {
         scoreboard.removePlayerFromTeam(player.getEntityName(), team);
         RegistryKey<World> registryKey = world.getRegistryKey();
+        if (Objects.equals(teamName, teamRogueName)) return;
         if (Objects.equals(teamName, teamAName)) {
             Team teamB = scoreboard.getTeam(teamBName);
             scoreboard.addPlayerToTeam(player.getEntityName(), teamB);

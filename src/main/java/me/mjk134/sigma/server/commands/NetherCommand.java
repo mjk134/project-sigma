@@ -20,10 +20,13 @@ import java.util.Objects;
 public class NetherCommand implements CommandInterface {
 
     public static int run(CommandContext<ServerCommandSource> context) {
-        if (!ConfigManager.ENABLED_NETHER) return 1;
+        if (!ConfigManager.ENABLED_NETHER) {
+            context.getSource().sendError(new LiteralText("The nether is not active!"));
+            return 1;
+        }
         try {
             ServerPlayerEntity player = context.getSource().getPlayer();
-            player.sendMessage(new LiteralText("Send you to the nether.."), false);
+            context.getSource().sendFeedback(new LiteralText("Send you to the nether.."), false);
             Team team = player.getScoreboard().getPlayerTeam(player.getEntityName());
             assert team != null;
             if (Objects.equals(team.getName(), ConfigManager.teamAName)) {
