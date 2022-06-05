@@ -31,7 +31,7 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "onKilledBy", at = @At(value = "HEAD"))
     public void onAnimalDeath(LivingEntity entity, CallbackInfo ci) {
-        FileReader reader = null;
+        FileReader reader;
         try {
             reader = new FileReader("project-sigma.json");
         } catch (FileNotFoundException e) {
