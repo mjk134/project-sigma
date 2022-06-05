@@ -3,12 +3,10 @@ package me.mjk134.sigma.server.commands;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.mjk134.sigma.server.ConfigManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
 
@@ -27,7 +25,7 @@ public class SetLivesCommand {
                 return 1;
             }
         } else {
-            String playerName = '"' + PlayerName.getEntityName() + '"';
+            String playerName = PlayerName.getEntityName();
             Integer newLives = context.getArgument("Lives", Integer.class);
 
             Gson gson = new Gson();
@@ -41,7 +39,7 @@ public class SetLivesCommand {
             JsonArray playerLivesArray = json.getAsJsonArray("players");
             for (int i = 0; i < playerLivesArray.size(); i++) {
                 JsonObject playerData = playerLivesArray.get(i).getAsJsonObject();
-                if (Objects.equals(playerData.get("name").toString(), playerName)) {
+                if (Objects.equals(playerData.get("name").getAsString(), playerName)) {
                     playerData.addProperty("name", PlayerName.getEntityName());
                     playerData.addProperty("numLives", newLives);
                     context.getSource().sendFeedback(new LiteralText(PlayerName.getEntityName() + " now has " + newLives + (newLives == 1 ? " life." : " lives.")), true);
