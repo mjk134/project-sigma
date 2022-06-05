@@ -33,10 +33,10 @@ import java.util.Objects;
 
 public class ConfigManager {
 
-    // TODO: Add command to enable/disable LivingEntityMixin.java functions
 
     public static boolean ENABLED = false;
     public static boolean STARTED = false;
+    public static boolean LivingEntityMixin = false;
     public static int numLives = 3;
     public static String teamAName = "TeamA";
     public static String teamBName = "TeamB";
@@ -64,6 +64,7 @@ public class ConfigManager {
         JsonObject json = gson.fromJson(reader, JsonObject.class);
         json.addProperty("enabled", ENABLED);
         json.addProperty("started", STARTED);
+        json.addProperty("livingEntityMixin", LivingEntityMixin);
         json.addProperty("numLives", numLives);
         json.addProperty("teamAName", teamAName);
         json.addProperty("teamBName", teamBName);
@@ -80,6 +81,7 @@ public class ConfigManager {
         JsonObject json = gson.fromJson(reader, JsonObject.class);
         ENABLED = json.get("enabled").getAsBoolean();
         STARTED = json.get("started").getAsBoolean();
+        LivingEntityMixin = json.get("livingEntityMixin").getAsBoolean();
         numLives = json.get("numLives").getAsInt();
         teamAName = json.get("teamAName").getAsString();
         teamBName = json.get("teamBName").getAsString();
@@ -136,6 +138,17 @@ public class ConfigManager {
             .setDifficulty(Difficulty.HARD);
         fantasy.getOrOpenPersistentWorld(new Identifier("project-sigma",teamAName + "_nether"), config);
         fantasy.getOrOpenPersistentWorld(new Identifier("project-sigma",teamBName + "_nether"), config);
+    }
+
+    public void toggleEntityMixin() throws IOException {
+        LivingEntityMixin = !LivingEntityMixin;
+        FileReader reader = new FileReader("project-sigma.json");
+        JsonObject json = gson.fromJson(reader, JsonObject.class);
+        json.addProperty("livingEntityMixin", LivingEntityMixin);
+        reader.close();
+        FileWriter writer = new FileWriter("project-sigma.json");
+        gson.toJson(json, writer);
+        writer.close();
     }
 
     public void start() throws IOException {

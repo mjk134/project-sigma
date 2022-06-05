@@ -1,5 +1,8 @@
 package me.mjk134.sigma.mixin;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import me.mjk134.sigma.ProjectSigma;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.entity.Entity;
@@ -22,6 +25,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
@@ -30,6 +36,15 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "onKilledBy", at = @At(value = "HEAD"))
     public void onAnimalDeath(LivingEntity entity, CallbackInfo ci) {
+        FileReader reader = null;
+        try {
+            reader = new FileReader("project-sigma.json");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        Gson gson = new Gson();
+        JsonObject json = gson.fromJson(reader, JsonObject.class);
+        if (!json.get("livingEntityMixin").getAsBoolean()) return;
         try {
             if (entity != null) {
                 if ((LivingEntity) (Object) this instanceof AnimalEntity) {
