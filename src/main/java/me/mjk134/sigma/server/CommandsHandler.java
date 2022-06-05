@@ -111,6 +111,7 @@ public class CommandsHandler {
                 .executes(NetherCommand::run)
         );
 
+
     }
 
 }

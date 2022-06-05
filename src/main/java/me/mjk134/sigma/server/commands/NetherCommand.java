@@ -26,13 +26,13 @@ public class NetherCommand implements CommandInterface {
         }
         try {
             ServerPlayerEntity player = context.getSource().getPlayer();
-            context.getSource().sendFeedback(new LiteralText("Send you to the nether.."), false);
+            context.getSource().sendFeedback(new LiteralText("Sending you to the nether.."), false);
             Team team = player.getScoreboard().getPlayerTeam(player.getEntityName());
             assert team != null;
             if (Objects.equals(team.getName(), ConfigManager.teamAName)) {
                 context.getSource().getServer().getWorldRegistryKeys().forEach(r -> {
                     ServerWorld world = context.getSource().getServer().getWorld(r);
-                    if (Objects.equals(r.getValue(), new Identifier("project-sigma", ConfigManager.teamAName + "_nether"))) {
+                    if (Objects.equals(r.getValue(), new Identifier("project-sigma", ConfigManager.teamAName.toLowerCase() + "_nether"))) {
                         assert world != null;
                         BlockPos spawn = world.getSpawnPos();
                         TeleportTarget teleportTarget = new TeleportTarget(new Vec3d(spawn.getX(), spawn.getY(), spawn.getZ()), new Vec3d(1, 1, 1), 0f, 0f);
@@ -42,7 +42,7 @@ public class NetherCommand implements CommandInterface {
             } else {
                 context.getSource().getServer().getWorldRegistryKeys().forEach(r -> {
                     ServerWorld world = context.getSource().getServer().getWorld(r);
-                    if (Objects.equals(r.getValue(), new Identifier("project-sigma", ConfigManager.teamBName + "_nether"))) {
+                    if (Objects.equals(r.getValue(), new Identifier("project-sigma", ConfigManager.teamBName.toLowerCase() + "_nether"))) {
                         assert world != null;
                         BlockPos spawn = world.getSpawnPos();
                         TeleportTarget teleportTarget = new TeleportTarget(new Vec3d(spawn.getX(), spawn.getY(), spawn.getZ()), new Vec3d(1, 1, 1), 0f, 0f);
