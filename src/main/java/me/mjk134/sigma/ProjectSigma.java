@@ -6,24 +6,14 @@ import me.mjk134.sigma.server.LivesManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
-import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
-import org.checkerframework.checker.units.qual.C;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +23,8 @@ import java.util.Objects;
 
 
 public class ProjectSigma implements ModInitializer {
+
+	// TODO: Implement assignment of nether and server instances to variables/constants
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("project-sigma");
 	public static ConfigManager configManager = new ConfigManager();
@@ -59,10 +51,10 @@ public class ProjectSigma implements ModInitializer {
 			Scoreboard scoreboard = newPlayer.getScoreboard();
 
 			if (!Objects.equals(scoreboard.getPlayerTeam(newPlayer.getEntityName()), scoreboard.getTeam(ConfigManager.teamRogueName)))
-				newPlayer.networkHandler.sendPacket(new TitleS2CPacket(new LiteralText(LivesManager.playerLives.get(newPlayer.getEntityName()) == 0 ? "You've Been Eliminated!" : "You died!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
+				newPlayer.networkHandler.sendPacket(new TitleS2CPacket(new LiteralText(LivesManager.playerLives.get(newPlayer.getEntityName()).getNumLives() == 0 ? "You've Been Eliminated!" : "You died!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
 			else
 				newPlayer.networkHandler.sendPacket(new TitleS2CPacket(new LiteralText("You've Gone Rogue!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
-			newPlayer.networkHandler.sendPacket(new SubtitleS2CPacket(new LiteralText(LivesManager.playerLives.get(newPlayer.getEntityName()) == 0 ? "You're All Out Of Lives" : "You now have " + LivesManager.playerLives.get(newPlayer.getEntityName()) + " lives remaining!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
+			newPlayer.networkHandler.sendPacket(new SubtitleS2CPacket(new LiteralText(LivesManager.playerLives.get(newPlayer.getEntityName()).getNumLives() == 0 ? "You're All Out Of Lives" : "You now have " + LivesManager.playerLives.get(newPlayer.getEntityName()) + " lives remaining!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
 		});
 
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {

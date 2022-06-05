@@ -5,13 +5,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import me.mjk134.sigma.ProjectSigma;
-import net.minecraft.client.world.GeneratorType;
 import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.scoreboard.ScoreboardCriterion;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -19,16 +16,12 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.GeneratorOptions;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import xyz.nucleoid.fantasy.Fantasy;
 import xyz.nucleoid.fantasy.RuntimeWorldConfig;
-import xyz.nucleoid.fantasy.RuntimeWorldHandle;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Objects;
 
 public class ConfigManager {
@@ -86,10 +79,11 @@ public class ConfigManager {
         teamRogueName = json.get("teamRogueName").getAsString();
         ENABLED_NETHER = json.get("enabledNether").getAsBoolean();
         JsonArray playerLivesArray = json.getAsJsonArray("players");
-        HashMap<String, Integer> playerLives = new HashMap<>();
+        HashMap<String, Player> playerLives = new HashMap<>();
         for (int i = 0; i < playerLivesArray.size(); i++) {
             JsonObject playerData = playerLivesArray.get(i).getAsJsonObject();
-            playerLives.put(playerData.get("name").getAsString(), playerData.get("numLives").getAsInt());
+            Player player = new Player(playerData.get("numLives").getAsInt(), playerData.get("allowsDonations").getAsBoolean());
+            playerLives.put(playerData.get("name").getAsString(), player);
         }
         LivesManager.setPlayerLives(playerLives);
     }
@@ -132,8 +126,8 @@ public class ConfigManager {
         ChunkGeneratorSettings settings = server.getRegistryManager().get(Registry.CHUNK_GENERATOR_SETTINGS_KEY).getEntry(ChunkGeneratorSettings.NETHER).get().value();
         RuntimeWorldConfig config = new RuntimeWorldConfig();
         config.setDimensionType(DimensionType.THE_NETHER_REGISTRY_KEY);
-        //config.setSeed(171717L);
-        //config.setGenerator(GeneratorOptions.createGenerator(server.getRegistryManager(),config.getSeed(), server.getRegistryManager().get(Registry.CHUNK_GENERATOR_SETTINGS_KEY).getKey(settings).get()));
+        // config.setSeed(171717L);
+        // config.setGenerator(GeneratorOptions.createGenerator(server.getRegistryManager(),config.getSeed(), server.getRegistryManager().get(Registry.CHUNK_GENERATOR_SETTINGS_KEY).getKey(settings).get()));
         config.setGenerator(Objects.requireNonNull(server.getWorld(World.NETHER)).getChunkManager().getChunkGenerator());
         config.setDifficulty(Difficulty.HARD);
         fantasy.getOrOpenPersistentWorld(new Identifier("project-sigma",teamAName.toLowerCase() + "_nether"), config);

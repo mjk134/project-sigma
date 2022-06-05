@@ -1,25 +1,19 @@
 package me.mjk134.sigma.server.commands;
 
-import com.google.common.collect.Lists;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.mjk134.sigma.ProjectSigma;
 import me.mjk134.sigma.server.ConfigManager;
-import net.minecraft.block.Block;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.border.WorldBorder;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 
 public class StartWallsCommand implements CommandInterface {
 
