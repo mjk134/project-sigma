@@ -29,12 +29,12 @@ public class DonateLivesCommand {
         } else {
             Scoreboard scoreboard = context.getSource().getServer().getScoreboard();
             try {
-                //if player trying to donate is rogue, don't let them
+                // if player trying to donate is rogue, don't let them
                 if (!Objects.equals(scoreboard.getPlayerTeam(context.getSource().getPlayer().getEntityName()), scoreboard.getTeam(ConfigManager.teamAName)) && !Objects.equals(scoreboard.getPlayerTeam(context.getSource().getPlayer().getEntityName()), scoreboard.getTeam(ConfigManager.teamBName))) {
                     context.getSource().sendError(new LiteralText("You can't donate lives to a player if you are rogue!"));
                     return 0;
                 }
-                //if player is trying to donate to someone on the other team, don't let them
+                // if player is trying to donate to someone on the other team, don't let them
                 if (!Objects.equals(scoreboard.getPlayerTeam(PlayerName.getEntityName()), scoreboard.getPlayerTeam(context.getSource().getPlayer().getEntityName()))) {
                     context.getSource().sendError(new LiteralText("You can't donate lives to a player on the other team!"));
                     return 0;

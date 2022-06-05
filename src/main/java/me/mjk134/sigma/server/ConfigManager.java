@@ -130,12 +130,14 @@ public class ConfigManager {
         gson.toJson(json, writer);
         writer.close();
         ChunkGeneratorSettings settings = server.getRegistryManager().get(Registry.CHUNK_GENERATOR_SETTINGS_KEY).getEntry(ChunkGeneratorSettings.NETHER).get().value();
-        RuntimeWorldConfig config = new RuntimeWorldConfig()
-            .setDimensionType(DimensionType.THE_NETHER_REGISTRY_KEY)
-            .setGenerator(GeneratorOptions.createGenerator(server.getRegistryManager(), 0, server.getRegistryManager().get(Registry.CHUNK_GENERATOR_SETTINGS_KEY).getKey(settings).get()))
-            .setDifficulty(Difficulty.HARD);
-        fantasy.getOrOpenPersistentWorld(new Identifier("project-sigma",teamAName + "_nether"), config);
-        fantasy.getOrOpenPersistentWorld(new Identifier("project-sigma",teamBName + "_nether"), config);
+        RuntimeWorldConfig config = new RuntimeWorldConfig();
+        config.setDimensionType(DimensionType.THE_NETHER_REGISTRY_KEY);
+        //config.setSeed(171717L);
+        //config.setGenerator(GeneratorOptions.createGenerator(server.getRegistryManager(),config.getSeed(), server.getRegistryManager().get(Registry.CHUNK_GENERATOR_SETTINGS_KEY).getKey(settings).get()));
+        config.setGenerator(Objects.requireNonNull(server.getWorld(World.NETHER)).getChunkManager().getChunkGenerator());
+        config.setDifficulty(Difficulty.HARD);
+        fantasy.getOrOpenPersistentWorld(new Identifier("project-sigma",teamAName.toLowerCase() + "_nether"), config);
+        fantasy.getOrOpenPersistentWorld(new Identifier("project-sigma",teamBName.toLowerCase() + "_nether"), config);
     }
 
     public void start() throws IOException {
