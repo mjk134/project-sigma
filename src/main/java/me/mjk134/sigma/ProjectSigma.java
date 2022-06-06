@@ -83,7 +83,7 @@ public class ProjectSigma implements ModInitializer {
 			try {
 				reader1 = new FileReader("project-sigma.json");
 			} catch (FileNotFoundException e) {
-				throw new RuntimeException(e);
+				return;
 			}
 			JsonObject json1 = gson1.fromJson(reader1, JsonObject.class);
 			JsonArray playerLivesArray1 = json1.getAsJsonArray("players");
