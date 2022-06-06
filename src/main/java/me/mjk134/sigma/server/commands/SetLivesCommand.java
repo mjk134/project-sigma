@@ -26,8 +26,8 @@ public class SetLivesCommand {
             }
         } else {
             try {
-                ServerPlayerEntity player = (ServerPlayerEntity) EntityArgumentType.getEntity(context, "player");
-                Integer newLives = context.getArgument("lives", Integer.class);
+                ServerPlayerEntity player = (ServerPlayerEntity) EntityArgumentType.getEntity(context, "PlayerName");
+                Integer newLives = context.getArgument("Lives", Integer.class);
                 Gson gson = new Gson();
                 FileReader reader = new FileReader("project-sigma.json");
                 JsonObject json = new Gson().fromJson(reader, JsonObject.class);
