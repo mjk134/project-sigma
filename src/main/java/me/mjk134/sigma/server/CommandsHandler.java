@@ -35,18 +35,24 @@ public class CommandsHandler {
                                     }
                                     return 1;
                                 })
+                        )
+                        .then(literal("toggle")
                                 .then(literal("nether")
-                                        .executes(context -> {
-                                            try {
-                                                ProjectSigma.configManager.enableNether(context.getSource().getServer());
-                                                context.getSource().getPlayer().sendMessage(new LiteralText("Enabled nether!"), false);
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                            return 1;
-                                        })
+                                    .executes(context -> {
+                                        try {
+                                            ProjectSigma.configManager.enableNether(context.getSource().getServer());
+                                            context.getSource().getPlayer().sendMessage(new LiteralText("Enabled nether!"), false);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        return 1;
+                                    }))
+                                .then(literal("livingEntityMixin")
+                                        .executes(EntityMixinsCommand::run)
                                 )
                         )
+
+                        
                         .then(literal("swap").then(argument("player", EntityArgumentType.entities()).executes(SwapTeamsCommand::run)))
                         .requires((source) -> source.hasPermissionLevel(2))
         );
