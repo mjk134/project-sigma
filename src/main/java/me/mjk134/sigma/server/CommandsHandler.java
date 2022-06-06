@@ -57,7 +57,8 @@ public class CommandsHandler {
                         .requires((source) -> source.hasPermissionLevel(2))
         );
         dispatcher.register(
-                literal("lives").then(literal("get").then(argument("player", EntityArgumentType.entities()).executes(GetLivesCommand::run)))
+                literal("lives")
+                .then(literal("get").then(argument("player", EntityArgumentType.entities()).executes(GetLivesCommand::run)))
                 .then(literal("set")
                         .then(argument("PlayerName", EntityArgumentType.entities()).then(argument("Lives", IntegerArgumentType.integer()).executes(context -> {
                             try {
@@ -65,9 +66,10 @@ public class CommandsHandler {
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
-                        })))
-                ).requires((source) -> source.hasPermissionLevel(2))
+                        }))).requires((source) -> source.hasPermissionLevel(2))
+                )
                 .then(literal("donate").then(argument("player", EntityArgumentType.entities()).executes(DonateLivesCommand::run)))
+                .then(literal("donations").then(literal("toggle").executes(DonationPreferenceCommand::run)))
         );
 
         dispatcher.register(literal("dimension")
