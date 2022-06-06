@@ -14,7 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Objects;
 
-public class DonationPreferenceCommand {
+public class DonationAcceptingCommand {
     public static int run(CommandContext<ServerCommandSource> context) {
         if (!ConfigManager.STARTED || !ConfigManager.ENABLED) {
             try {
