@@ -47,7 +47,7 @@ public class DonationPreferenceCommand {
                 }
             }
             reader.close();
-            } catch (CommandSyntaxException | IOException e) {
+        } catch (CommandSyntaxException | IOException e) {
             return 0;
         }
 
