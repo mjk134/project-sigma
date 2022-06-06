@@ -1,12 +1,7 @@
 package me.mjk134.sigma.mixin;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import me.mjk134.sigma.ProjectSigma;
-import net.minecraft.advancement.Advancement;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
@@ -35,7 +30,7 @@ public abstract class LivingEntityMixin {
         try {
             reader = new FileReader("project-sigma.json");
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            return;
         }
         Gson gson = new Gson();
         JsonObject json = gson.fromJson(reader, JsonObject.class);

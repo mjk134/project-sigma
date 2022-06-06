@@ -1,23 +1,17 @@
 package me.mjk134.sigma.server.commands;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.mjk134.sigma.ProjectSigma;
 import me.mjk134.sigma.server.ConfigManager;
-import net.minecraft.entity.Entity;
-import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Objects;
 
 public class EntityMixinsCommand {
 
@@ -33,14 +27,14 @@ public class EntityMixinsCommand {
         try {
             ProjectSigma.configManager.toggleEntityMixin();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return 0;
         }
 
-        FileReader reader = null;
+        FileReader reader;
         try {
             reader = new FileReader("project-sigma.json");
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            return 0;
         }
         Gson gson = new Gson();
         JsonObject json = gson.fromJson(reader, JsonObject.class);
