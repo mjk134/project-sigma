@@ -3,17 +3,26 @@ package me.mjk134.sigma;
 import me.mjk134.sigma.server.CommandsHandler;
 import me.mjk134.sigma.server.ConfigManager;
 import me.mjk134.sigma.server.LivesManager;
+import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.TeleportTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,11 +33,14 @@ import java.util.Objects;
 
 public class ProjectSigma implements ModInitializer {
 
-	// TODO: Implement assignment of nether and server instances to variables/constants
+	// TODO: Implement usage of nether variables
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("project-sigma");
 	public static ConfigManager configManager = new ConfigManager();
 	public static LivesManager livesManager = new LivesManager();
+	public static MinecraftServer server;
+	public static ServerWorld teamANether;
+	public static ServerWorld teamBNether;
 
 	@Override
 	public void onInitialize() {
@@ -46,6 +58,23 @@ public class ProjectSigma implements ModInitializer {
 				e.printStackTrace();
 			}
 		}
+
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+			ProjectSigma.server = server;
+		});
+
+		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+			if (ConfigManager.ENABLED_NETHER) {
+				server.getWorldRegistryKeys().forEach(r -> {
+					ServerWorld world = server.getWorld(r);
+					if (Objects.equals(r.getValue(), new Identifier("project-sigma", ConfigManager.teamAName.toLowerCase() + "_nether"))) {
+						ProjectSigma.teamANether = world;
+					} else if (Objects.equals(r.getValue(), new Identifier("project-sigma", ConfigManager.teamBName.toLowerCase() + "_nether"))) {
+						ProjectSigma.teamBNether = world;
+					}
+				});
+			}
+		});
 
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
 			Scoreboard scoreboard = newPlayer.getScoreboard();
@@ -92,4 +121,5 @@ public class ProjectSigma implements ModInitializer {
 			CommandsHandler.registerCommands(dispatcher);
 		});
 	}
+
 }
