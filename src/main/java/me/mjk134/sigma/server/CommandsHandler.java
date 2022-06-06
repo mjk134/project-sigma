@@ -60,8 +60,8 @@ public class CommandsHandler {
                 literal("lives")
                 .then(literal("get").then(argument("player", EntityArgumentType.entities()).executes(GetLivesCommand::run)))
                 .then(literal("set")
-                        .then(argument("PlayerName", EntityArgumentType.entities()).then(argument("Lives", IntegerArgumentType.integer()).executes(context -> {
-                            try {
+                        .then(argument("PlayerName", EntityArgumentType.entities()).then(argument("Lives", IntegerArgumentType.integer()).executes(context -> {    .executes(context -> {
+                           try {
                                 return SetLivesCommand.run(context, EntityArgumentType.getEntity(context, "PlayerName"));
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -73,8 +73,8 @@ public class CommandsHandler {
         );
 
         dispatcher.register(literal("dimension")
-                .then(literal("nether").executes(NetherCommand::run))
-                .then(literal("overworld").executes(OverworldCommand::run))
+            .then(literal("nether").executes(NetherCommand::run))
+            .then(literal("overworld").executes(OverworldCommand::run))
         );
 
 

@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.mjk134.sigma.server.ConfigManager;
+import me.mjk134.sigma.server.LivesManager;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.server.command.ServerCommandSource;
@@ -57,6 +58,11 @@ public class DonateLivesCommand {
             // if player is trying to donate to someone on the other team, don't let them
             if (!Objects.equals(scoreboard.getPlayerTeam(recipientPlayer.getEntityName()), scoreboard.getPlayerTeam(context.getSource().getPlayer().getEntityName())) && !Objects.equals(scoreboard.getPlayerTeam(recipientPlayer.getEntityName()), scoreboard.getTeam(ConfigManager.teamRogueName))) {
                 context.getSource().sendError(new LiteralText("You can't donate lives to a player on the other team!"));
+                return 0;
+            }
+
+            if (!LivesManager.playerLives.get(donatingPlayer.getEntityName()).isAllowsDonations()) {
+                context.getSource().sendError(new LiteralText("This player isn't accepting donations!"));
                 return 0;
             }
 
