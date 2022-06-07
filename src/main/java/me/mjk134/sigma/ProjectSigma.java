@@ -56,9 +56,6 @@ public class ProjectSigma implements ModInitializer {
 
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			ProjectSigma.server = server;
-		});
-
-		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
 			if (ConfigManager.ENABLED_NETHER) {
 				server.getWorldRegistryKeys().forEach(r -> {
 					ServerWorld world = server.getWorld(r);
@@ -70,6 +67,7 @@ public class ProjectSigma implements ModInitializer {
 				});
 			}
 		});
+
 
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
 			Scoreboard scoreboard = newPlayer.getScoreboard();

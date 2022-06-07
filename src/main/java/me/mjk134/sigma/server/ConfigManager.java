@@ -26,6 +26,7 @@ import java.util.Objects;
 
 public class ConfigManager {
 
+    // TODO: Save lastNetherCoords and lastOverworldCoords
 
     public static boolean ENABLED = false;
     public static boolean STARTED = false;

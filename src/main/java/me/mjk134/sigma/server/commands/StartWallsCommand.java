@@ -97,6 +97,11 @@ public class StartWallsCommand implements CommandInterface {
 
         try {
             ProjectSigma.configManager.start();
+            try {
+                context.getSource().getPlayer().sendMessage(new LiteralText("Started!").setStyle(Style.EMPTY.withColor(Formatting.GREEN)), false);
+            } catch (CommandSyntaxException exception) {
+                return 1;
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }

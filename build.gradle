@@ -28,7 +28,8 @@ dependencies {
 
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	modImplementation 'xyz.nucleoid:fantasy:0.4.5+1.18.2'
+	modImplementation include('xyz.nucleoid:fantasy:0.4.5+1.18.2')
+
 }
 
 processResources {
