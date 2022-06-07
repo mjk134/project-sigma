@@ -23,14 +23,10 @@ public class OverworldCommand implements CommandInterface {
         ServerWorld overWorld = context.getSource().getServer().getOverworld();
         try {
             ServerPlayerEntity player = context.getSource().getPlayer();
-            if (player.getWorld().getRegistryKey() == World.OVERWORLD) {
+            if (player.getWorld().getRegistryKey() == World.OVERWORLD  || player.getWorld().getRegistryKey() == World.END) {
                 return 1;
             }
             context.getSource().sendFeedback(new LiteralText("Teleporting to overworld..."), false);
-            // ((ServerPlayerEntityInterface)player).moveDimension(overWorld);
-            // TeleportTarget teleportTarget = ((ServerPlayerEntityInterface)player).getTeleportLocation(overWorld);
-            // assert teleportTarget != null;
-            // player.teleport(overWorld, teleportTarget.position.getX(), teleportTarget.position.getY(), teleportTarget.position.getZ(), teleportTarget.yaw, teleportTarget.pitch);
             Player actualPlayer = LivesManager.playerLives.get(player.getEntityName());
             actualPlayer.setLastNetherCoords(player.getPos());
             TeleportTarget teleportTarget;
@@ -41,7 +37,6 @@ public class OverworldCommand implements CommandInterface {
             }
             player.teleport(overWorld, teleportTarget.position.getX(), teleportTarget.position.getY(), teleportTarget.position.getZ(), teleportTarget.yaw, teleportTarget.pitch);
             LivesManager.playerLives.replace(player.getEntityName(), actualPlayer);
-            // FabricDimensionInternals.changeDimension(player, overWorld, teleportTarget);
         } catch (CommandSyntaxException e) {
             e.printStackTrace();
         }

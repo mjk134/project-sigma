@@ -30,7 +30,7 @@ public class NetherCommand implements CommandInterface {
         }
         try {
             ServerPlayerEntity player = context.getSource().getPlayer();
-            if (player.getWorld().getRegistryKey() == ProjectSigma.teamANether.getRegistryKey() || player.getWorld().getRegistryKey() == ProjectSigma.teamBNether.getRegistryKey()) {
+            if (player.getWorld().getRegistryKey() == ProjectSigma.teamANether.getRegistryKey() || player.getWorld().getRegistryKey() == ProjectSigma.teamBNether.getRegistryKey() || player.getWorld().getRegistryKey() == World.END) {
                 return 1;
             }
             Player actualPlayer = LivesManager.playerLives.get(player.getEntityName());
@@ -46,20 +46,12 @@ public class NetherCommand implements CommandInterface {
                         actualPlayer.setLastOverworldCoords(player.getPos());
                         TeleportTarget teleportTarget;
                         if (Objects.equals(actualPlayer.getLastNetherCoords(), new Vec3d(0, 0, 0))) {
-                            teleportTarget = new TeleportTarget(new Vec3d(spawn.getX(), spawn.getY(), spawn.getZ()), new Vec3d(1, 1, 1), 0f, 0f);
+                            teleportTarget = new TeleportTarget(new Vec3d(3, 83, -20), new Vec3d(1, 1, 1), 0f, 0f);
                         } else {
                             teleportTarget = new TeleportTarget(actualPlayer.getLastNetherCoords(), new Vec3d(1, 1, 1), 0f, 0f);
                         }
                         player.teleport(world, teleportTarget.position.getX(), teleportTarget.position.getY(), teleportTarget.position.getZ(), teleportTarget.yaw, teleportTarget.pitch);
                         LivesManager.playerLives.replace(player.getEntityName(), actualPlayer);
-                        // TeleportTarget teleportTarget = ((ServerPlayerEntityInterface)player).getTeleportLocation(world);
-                        // assert teleportTarget != null;
-                        // player.getSpawnPointPosition();
-                        // // player.getWorld().getSpawnPos()
-                        // player.teleport(world, teleportTarget.position.getX(), teleportTarget.position.getY(), teleportTarget.position.getZ(), teleportTarget.yaw, teleportTarget.pitch);
-                        // ((ServerPlayerEntityInterface)player).moveDimension(world);
-                        // player.moveToWorld(world);
-                        // FabricDimensionInternals.changeDimension(player, world, teleportTarget);
                     }
                 });
             } else {
@@ -71,18 +63,12 @@ public class NetherCommand implements CommandInterface {
                         actualPlayer.setLastOverworldCoords(player.getPos());
                         TeleportTarget teleportTarget;
                         if (Objects.equals(actualPlayer.getLastNetherCoords(), new Vec3d(0, 0, 0))) {
-                            teleportTarget = new TeleportTarget(new Vec3d(spawn.getX(), spawn.getY(), spawn.getZ()), new Vec3d(1, 1, 1), 0f, 0f);
+                            teleportTarget = new TeleportTarget(new Vec3d(3, 83, -20), new Vec3d(1, 1, 1), 0f, 0f);
                         } else {
                             teleportTarget = new TeleportTarget(actualPlayer.getLastNetherCoords(), new Vec3d(1, 1, 1), 0f, 0f);
                         }
                         LivesManager.playerLives.replace(player.getEntityName(), actualPlayer);
                         player.teleport(world, teleportTarget.position.getX(), teleportTarget.position.getY(), teleportTarget.position.getZ(), teleportTarget.yaw, teleportTarget.pitch);
-                        // FabricDimensionInternals.changeDimension(player, world, teleportTarget);
-                        // ((ServerPlayerEntityInterface)player).moveDimension(world);
-                        // ServerPlayerEntity newPlayer = (ServerPlayerEntity) player.moveToWorld(world);
-                        // player.kill();
-                        // TeleportTarget teleportTarget = ((ServerPlayerEntityInterface)player).getTeleportLocation(world);
-                        // player.teleport(world, teleportTarget.position.getX(), teleportTarget.position.getY(), teleportTarget.position.getZ(), teleportTarget.yaw, teleportTarget.pitch);
                     }
                 });
             }

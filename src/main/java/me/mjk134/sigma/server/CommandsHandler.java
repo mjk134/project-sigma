@@ -59,7 +59,7 @@ public class CommandsHandler {
         dispatcher.register(
                 literal("lives")
                 .then(literal("get").then(argument("player", EntityArgumentType.entities()).executes(GetLivesCommand::run)))
-                .then(literal("set").then(argument("PlayerName", EntityArgumentType.entities()).then(argument("Lives", IntegerArgumentType.integer()).executes(SetLivesCommand::run)).requires((source) -> source.hasPermissionLevel(2))))
+                .then(literal("set").then(argument("player", EntityArgumentType.entities()).then(argument("lives", IntegerArgumentType.integer()).executes(SetLivesCommand::run))).requires((source) -> source.hasPermissionLevel(2)))
                 .then(literal("donate").then(argument("player", EntityArgumentType.entities()).executes(DonateLivesCommand::run)))
                 .then(literal("donations").then(literal("toggle").executes(DonationAcceptingCommand::run)))
         );
