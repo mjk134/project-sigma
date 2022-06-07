@@ -89,33 +89,12 @@ public class ProjectSigma implements ModInitializer {
 
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
 			Scoreboard scoreboard = newPlayer.getScoreboard();
-
-			Gson gson1 = new Gson();
-			FileReader reader1;
-			try {
-				reader1 = new FileReader("project-sigma.json");
-			} catch (FileNotFoundException e) {
-				return;
-			}
-			JsonObject json1 = gson1.fromJson(reader1, JsonObject.class);
-			JsonArray playerLivesArray1 = json1.getAsJsonArray("players");
-
-			String playerName1 = newPlayer.getEntityName();
-			JsonObject playerData = null;
-			for (int i = 0; i < playerLivesArray1.size(); i++) {
-				playerData = playerLivesArray1.get(i).getAsJsonObject();
-				if (Objects.equals(playerData.get("name").getAsString(), playerName1)) {
-					
-					break;
-				}
-			}
-			
 			if (!Objects.equals(scoreboard.getPlayerTeam(newPlayer.getEntityName()), scoreboard.getTeam(ConfigManager.teamRogueName)))
 				newPlayer.networkHandler.sendPacket(new TitleS2CPacket(new LiteralText(LivesManager.playerLives.get(newPlayer.getEntityName()).getNumLives() == 0 ? "You've Been Eliminated!" : "You died!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
 			else {
 				newPlayer.networkHandler.sendPacket(new TitleS2CPacket(new LiteralText("You've Gone Rogue!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
 			}
-			newPlayer.networkHandler.sendPacket(new SubtitleS2CPacket(new LiteralText(LivesManager.playerLives.get(newPlayer.getEntityName()).getNumLives() == 0 ? "You're All Out Of Lives" : "You now have " + playerData.get("numLives").getAsInt() + " lives remaining!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
+			newPlayer.networkHandler.sendPacket(new SubtitleS2CPacket(new LiteralText(LivesManager.playerLives.get(newPlayer.getEntityName()).getNumLives() == 0 ? "You're All Out Of Lives" : "You now have " + LivesManager.playerLives.get(newPlayer.getEntityName()).getNumLives() + " lives remaining!").setStyle(Style.EMPTY.withColor(Formatting.RED))));
 		});
 
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
