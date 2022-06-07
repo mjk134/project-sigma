@@ -36,6 +36,7 @@ public class ConfigManager {
     public static String teamBName = "TeamB";
     public static String teamRogueName = "Rogue";
     public static boolean ENABLED_NETHER = false;
+    public static boolean ENABLED_WALL_TELEPORT = true;
     private final Gson gson = new Gson();
 
     public boolean configExists() {
@@ -64,6 +65,7 @@ public class ConfigManager {
         json.addProperty("teamBName", teamBName);
         json.addProperty("teamRogueName", teamRogueName);
         json.addProperty("enabledNether", ENABLED_NETHER);
+        json.addProperty("wallTeleport", ENABLED_WALL_TELEPORT);
         reader.close();
         writer = new FileWriter("project-sigma.json");
         gson.toJson(json, writer);
@@ -81,6 +83,7 @@ public class ConfigManager {
         teamBName = json.get("teamBName").getAsString();
         teamRogueName = json.get("teamRogueName").getAsString();
         ENABLED_NETHER = json.get("enabledNether").getAsBoolean();
+        ENABLED_WALL_TELEPORT = json.get("wallTeleport").getAsBoolean();
         JsonArray playerLivesArray = json.getAsJsonArray("players");
         HashMap<String, Player> playerLives = new HashMap<>();
         for (int i = 0; i < playerLivesArray.size(); i++) {

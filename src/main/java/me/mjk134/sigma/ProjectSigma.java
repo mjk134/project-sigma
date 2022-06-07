@@ -7,27 +7,41 @@ import me.mjk134.sigma.server.CommandsHandler;
 import me.mjk134.sigma.server.ConfigManager;
 import me.mjk134.sigma.server.LivesManager;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.world.WorldTickCallback;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 public class ProjectSigma implements ModInitializer {
@@ -134,10 +148,45 @@ public class ProjectSigma implements ModInitializer {
 			}
 		});
 
+		ServerTickEvents.START_SERVER_TICK.register(server -> {
+			Gson gson1 = new Gson();
+			FileReader reader1;
+			try {
+				reader1 = new FileReader("project-sigma.json");
+			} catch (FileNotFoundException e) {
+				return;
+			}
+			JsonObject json1 = gson1.fromJson(reader1, JsonObject.class);
+			JsonArray playerLivesArray1 = json1.getAsJsonArray("players");
+			if (!json1.get("wallTeleport").getAsBoolean()) {
+
+				return;
+				//TODO: make toggle command for this
+			}
+
+			Scoreboard scoreboard = MinecraftClient.getInstance().getServer().getScoreboard();
+			RegistryKey<World> registryKey = MinecraftClient.getInstance().getServer().getOverworld().getRegistryKey();
+			Object[] playerList = PlayerLookup.all(MinecraftClient.getInstance().getServer()).toArray();
+			for (int i = 0; i < playerList.length; i++) {
+				ServerPlayerEntity player = (ServerPlayerEntity) playerList[i];
+				if (player == null) return;
+				//separated along z
+
+				if (player.getPos().z >= 0 && Objects.equals(scoreboard.getPlayerTeam(player.getEntityName()), scoreboard.getTeam(ConfigManager.teamAName))) {
+					player.setSpawnPoint(registryKey, new BlockPos(1, 118, -7), 0.0f, true, false);
+					player.teleport(1, 118, -7);
+					player.sendMessage(new LiteralText("You are not allowed over the wall!"), false);
+				} else if (player.getPos().z <= 0 && Objects.equals(scoreboard.getPlayerTeam(player.getEntityName()), scoreboard.getTeam(ConfigManager.teamBName))) {
+					player.setSpawnPoint(registryKey, new BlockPos(1, 118, -7), 0.0f, true, false);
+					player.teleport(1, 118, 18);
+					player.sendMessage(new LiteralText("You are not allowed over the wall!"), false);
+				}
+			}
+		});
+
 		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
 			LOGGER.info("Command dispatcher has been initialized!");
 			CommandsHandler.registerCommands(dispatcher);
 		});
 	}
-
 }
