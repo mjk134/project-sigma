@@ -42,7 +42,7 @@ public class Player {
         return allowsDonations;
     }
 
-    public void setAllowsDonations(boolean allowsDonations) {
-        this.allowsDonations = allowsDonations;
+    public void toggleAllowsDonations() {
+        this.allowsDonations = !this.allowsDonations;
     }
 }

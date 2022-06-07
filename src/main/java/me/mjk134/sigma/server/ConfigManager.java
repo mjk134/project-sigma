@@ -148,6 +148,7 @@ public class ConfigManager {
         writer.close();
     }
 
+
     public void start() throws IOException {
         STARTED = true;
         FileReader reader = new FileReader("project-sigma.json");
