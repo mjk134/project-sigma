@@ -38,6 +38,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -128,29 +129,16 @@ public class ProjectSigma implements ModInitializer {
 		});
 
 		ServerTickEvents.START_SERVER_TICK.register(server -> {
-			Gson gson1 = new Gson();
-			FileReader reader1;
-			try {
-				reader1 = new FileReader("project-sigma.json");
-			} catch (FileNotFoundException e) {
+			if (!ConfigManager.ENABLED_WALL_TELEPORT) {
+				// TODO: make toggle command for this
 				return;
 			}
-			JsonObject json1 = gson1.fromJson(reader1, JsonObject.class);
-			JsonArray playerLivesArray1 = json1.getAsJsonArray("players");
-			if (!json1.get("wallTeleport").getAsBoolean()) {
 
-				return;
-				//TODO: make toggle command for this
-			}
-
-			Scoreboard scoreboard = MinecraftClient.getInstance().getServer().getScoreboard();
-			RegistryKey<World> registryKey = MinecraftClient.getInstance().getServer().getOverworld().getRegistryKey();
-			Object[] playerList = PlayerLookup.all(MinecraftClient.getInstance().getServer()).toArray();
-			for (int i = 0; i < playerList.length; i++) {
-				ServerPlayerEntity player = (ServerPlayerEntity) playerList[i];
-				if (player == null) return;
+			Scoreboard scoreboard = server.getScoreboard();
+			RegistryKey<World> registryKey = server.getOverworld().getRegistryKey();
+			List<ServerPlayerEntity> playerList = server.getPlayerManager().getPlayerList();
+			for (ServerPlayerEntity player : playerList) {
 				//separated along z
-
 				if (player.getPos().z >= 0 && Objects.equals(scoreboard.getPlayerTeam(player.getEntityName()), scoreboard.getTeam(ConfigManager.teamAName))) {
 					player.setSpawnPoint(registryKey, new BlockPos(1, 118, -7), 0.0f, true, false);
 					player.teleport(1, 118, -7);

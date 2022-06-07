@@ -47,9 +47,7 @@ public class CommandsHandler {
                                         }
                                         return 1;
                                     }))
-                                .then(literal("livingEntityMixin")
-                                        .executes(EntityMixinsCommand::run)
-                                )
+                                .then(literal("livingEntityMixin").executes(EntityMixinsCommand::run))
                         )
 
                         
